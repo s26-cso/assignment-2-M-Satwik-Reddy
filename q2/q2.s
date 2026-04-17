@@ -2,6 +2,7 @@
 
 .section .rodata
 fmt: .string "%d "
+fmt_last: .string "%d"
 fmt_nl: .string "\n"
 
 .text
@@ -115,7 +116,17 @@ print:
     slli t0, s5, 2
     add t1, s3, t0                          #result + i*4
     lw a1, 0(t1)                            #a1 = result[i]
+
+    addi t2, s0, -1                         #t2 = n - 1
+    beq s5, t2, print_last                  #if(i == n-1) go to print_last
+
     la a0, fmt                              #a0 = "%d "
+    call printf
+    addi s5, s5, 1                          #i++
+    beq x0, x0, print
+
+print_last:
+    la a0, fmt_last                         #a0 = "%d"
     call printf
     addi s5, s5, 1                          #i++
     beq x0, x0, print
